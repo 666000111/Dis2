@@ -14,6 +14,7 @@ public class UDPServerThread {
             byte[] buffer = new byte[1024];
             while(true){
                 DatagramPacket req = new DatagramPacket(buffer,buffer.length);
+                udpSocket.receive(req);
                 UDPThread udpThread = new UDPThread(udpSocket,req);
                 udpThread.run();
                 threadCount++;
@@ -31,6 +32,7 @@ public class UDPServerThread {
 
 
 class UDPThread extends Thread {
+    static int threadCount = 0;
     DatagramSocket udpSocket = null;
     DatagramPacket req = null;//接受的udp包
 
@@ -41,7 +43,7 @@ class UDPThread extends Thread {
 
     public void run() {
         try {
-            udpSocket.receive(req);
+
             DatagramPacket reply = new DatagramPacket(req.getData(),
                     req.getLength(), req.getAddress(),
                     req.getPort());
@@ -51,7 +53,6 @@ class UDPThread extends Thread {
         } catch (IOException e) {
             System.out.println("IO: " + e.getMessage());
         } finally {
-            if (udpSocket != null) udpSocket.close();
         }
 
 
